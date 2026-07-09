@@ -36,7 +36,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Mysql Test
-        run: ./gradlew test --tests W6D3DataBuilderStructureTest
+        run: ./gradlew W6D3DataBuilderStructureTest
         env:
           ORG_GRADLE_PROJECT_dbUrl: jdbc:mysql://localhost:3306/retail_test
           ORG_GRADLE_PROJECT_dbUser: root
