@@ -35,8 +35,8 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x gradlew
 
-      - name: Run Mysql Test
-        run: ./gradlew W6D3DataBuilderStructureTest
+      - name: Run Mysql Tests
+        run: ./gradlew clean W6D3DataBuilderStructureTest OrdersDataIT
         env:
           ORG_GRADLE_PROJECT_dbUrl: jdbc:mysql://localhost:3306/retail_test
           ORG_GRADLE_PROJECT_dbUser: root

@@ -103,6 +103,14 @@ val W6D3DataBuilderStructureTest by tasks.registering(Test::class) {
     maxParallelForks = 1
 }
 
+val OrdersDataIT by tasks.registering(Test::class) {
+    description = "Run OrdersDataIT"
+    group = "verification"
+    useProjectTestClasses()
+    useJUnitPlatform()
+    include("**/OrdersDataIT.class")
+}
+
 val cucumberSmoke by tasks.registering(Test::class) {
     description = "Runs Cucumber smoke scenarios through the Gradle JUnit Platform."
     group = "verification"
