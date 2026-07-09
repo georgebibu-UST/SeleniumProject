@@ -1,38 +1,43 @@
-name: Java CI
+name: MySQL Builder Tests
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_DATABASE: retail_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pmysql"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=20
 
-      - name: Set up JDK 21
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: 22
+          cache: gradle
 
-      # Installs Gradle 8.10.2 on the runner and puts `gradle` on PATH,
-      # so the build does NOT need the committed gradle-wrapper.jar.
-      # (Zscaler blocks committing/uploading .jar files, so the wrapper
-      #  jar is missing from the repo; using an installed Gradle avoids it.)
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.10.2'
+      - name: Make Gradle executable
+        run: chmod +x gradlew
 
-      # Runs compile for the whole project, but only the Testcontainers +
-      # plain unit tests (org.testcontainers.sdet.*). The Selenium/Cucumber UI
-      # tests (org.selenium.sdet.*) need a running web app + browser, so they
-      # are excluded from CI. Run the full suite locally with `gradle test`.
-      - name: Run Mysql tests
+      - name: Run Mysql Tests
         run: ./gradlew clean W6D3DataBuilderStructureTest OrdersDataIT
- 
+        env:
+          ORG_GRADLE_PROJECT_dbUrl: jdbc:mysql://localhost:3306/retail_test
+          ORG_GRADLE_PROJECT_dbUser: root
+          ORG_GRADLE_PROJECT_dbPassword: mysql
