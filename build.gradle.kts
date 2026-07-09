@@ -95,7 +95,7 @@ val w6d1CheckoutTest by tasks.registering(Test::class) {
 }
 
 val W6D3DataBuilderStructureTest by tasks.registering(Test::class) {
-    description = "Mysql"
+    description = "Mysql test"
     group = "verification"
     useProjectTestClasses()
     useJUnitPlatform()
