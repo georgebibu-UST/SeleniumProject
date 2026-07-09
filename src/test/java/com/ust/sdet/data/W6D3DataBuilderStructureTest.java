@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import static com.ust.sdet.data.OrderBuilder.anOrder;
 import static org.junit.jupiter.api.Assertions.*;
 
-class BuilderStructureTest {
+class W6D3DataBuilderStructureTest {
 
     @Test
     void builderUsesSensibleDefaults() {

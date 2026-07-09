@@ -99,7 +99,7 @@ val W6D3DataBuilderStructureTest by tasks.registering(Test::class) {
     group = "verification"
     useProjectTestClasses()
     useJUnitPlatform()
-    include("**/W6D3DatabuilderStructureTest.class")
+    include("**/W6D3DataBuilderStructureTest.class")
     maxParallelForks = 1
 }
 
