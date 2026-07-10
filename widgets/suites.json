@@ -1,1 +1,1 @@
-{"total":3,"items":[{"uid":"8c8ed26e2493a9151e218f9107d4e9b2","name":"com.ust.sdet.reporting.W6D4ReportingInsightsTest","statistic":{"failed":1,"broken":2,"skipped":0,"passed":1,"unknown":0,"total":4}},{"uid":"20a567eeb77864c7ac9422c0b3333dde","name":"com.ust.sdet.data.W6D3DataBuilderStructureTest","statistic":{"failed":0,"broken":0,"skipped":0,"passed":4,"unknown":0,"total":4}},{"uid":"df65e7fdd3598fd2bdbf6d8a17f7e96c","name":"com.ust.sdet.data.OrdersDataIT","statistic":{"failed":0,"broken":0,"skipped":0,"passed":4,"unknown":0,"total":4}}]}
+{"total":0,"items":[]}
