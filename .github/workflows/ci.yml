@@ -28,8 +28,10 @@ jobs:
           --health-retries=20
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -51,14 +53,17 @@ jobs:
       - name: Verify Allure Results
         if: always()
         run: |
-          echo "Current directory:"
-          pwd
+          echo "Result files:"
+          find build/allure-results -name "*-result.json" | wc -l
+          ls -la build/allure-results
 
-          echo "Allure results:"
-          ls -la build/allure-results || true
-
-          echo "Result file count:"
-          find build/allure-results -name "*-result.json" | wc -l || true
+      - name: Checkout gh-pages branch
+        if: always()
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
 
       - name: Generate Allure Report
         if: always()
@@ -76,6 +81,7 @@ jobs:
         with:
           name: allure-results
           path: build/allure-results
+          if-no-files-found: warn
 
       - name: Upload Allure Report
         if: always()
@@ -83,13 +89,14 @@ jobs:
         with:
           name: allure-report
           path: allure-report
+          if-no-files-found: warn
 
       - name: Deploy to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
+          publish_dir: allure-history
           publish_branch: gh-pages
 
       - name: Report Link
