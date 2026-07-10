@@ -12,51 +12,64 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class W6D4ReportingInsightsTest {
 
     @Test
-    @Story("Categories")
-    @Severity(SeverityLevel.CRITICAL)
-    @Description("Demonstrates reporting metadata and attachments")
-    void reportingShowsRichMetadata() {
+    @Story("Successful Execution")
+    @Severity(SeverityLevel.MINOR)
+    @Description("Demonstrates a passing test with steps and attachments")
+    void successfulScenario() {
 
-        Allure.step("Load sample order");
-        Allure.step("Verify order status");
-
-        attachText(
-                "Order Data",
-                """
-                SKU=SKU-RET-101
-                Quantity=1
-                Status=NEW
-                """
-        );
-
-        assertEquals("NEW", "NEW");
-    }
-
-    @Test
-    @Story("Attachments")
-    @Severity(SeverityLevel.NORMAL)
-    @Description("Demonstrates attachment support")
-    void attachmentExample() {
+        Allure.step("Load sample data");
+        Allure.step("Verify expected values");
 
         attachText(
-                "Execution Notes",
-                "Demonstration of Allure text attachment."
+                "Sample Data",
+                """
+                Product: Laptop
+                Price: 59999
+                """
         );
 
         assertTrue(true);
     }
 
     @Test
-    @Story("Business Validation")
+    @Story("Product Defect")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Failed assertion should appear as a product defect")
+    void productDefectExample() {
+
+        Allure.step("Verify business rule");
+
+        assertEquals(
+                100,
+                120,
+                "Checkout total is incorrect"
+        );
+    }
+
+    @Test
+    @Story("Test Defect")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Unexpected exceptions appear as broken tests")
+    void testDefectExample() {
+
+        Allure.step("Execute framework action");
+
+        throw new NullPointerException(
+                "Page object was not initialized"
+        );
+    }
+
+    @Test
+    @Story("Flaky Failure")
     @Severity(SeverityLevel.MINOR)
-    @Description("Demonstrates step-by-step reporting")
-    void stepsExample() {
+    @Description("Message matches categories.json flaky regex")
+    void flakyFailureExample() {
 
-        Allure.step("Create order");
-        Allure.step("Submit order");
-        Allure.step("Verify confirmation");
+        Allure.step("Call unstable dependency");
 
-        assertEquals(1, 1);
+        throw new RuntimeException(
+                "connection reset while waiting for response"
+        );
     }
 
     @Attachment(value = "{name}", type = "text/plain")
