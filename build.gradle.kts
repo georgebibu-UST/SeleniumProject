@@ -55,15 +55,25 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+
     systemProperty("baseUrl", providers.gradleProperty("baseUrl").orElse("http://localhost:5173").get())
     systemProperty("headless", providers.gradleProperty("headless").orElse("false").get())
     systemProperty("browser", providers.gradleProperty("browser").orElse("chrome").get())
     systemProperty("build.label", providers.gradleProperty("buildLabel").orElse("gradle-local").get())
     systemProperty("cucumber.publish.quiet", "true")
+
     systemProperty(
         "allure.results.directory",
         layout.buildDirectory.dir("allure-results").get().asFile.absolutePath
     )
+
+    doFirst {
+        copy {
+            from("src/test/resources/allure/categories.json")
+            into(layout.buildDirectory.dir("allure-results"))
+        }
+    }
+
     testLogging {
         events("passed", "skipped", "failed")
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.SHORT
