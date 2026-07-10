@@ -1,64 +1,89 @@
-name: Test Environment
- 
+name: MySQL Builder Tests
+
 on:
   push:
     branches:
       - main
   workflow_dispatch:
- 
+
 permissions:
   contents: write
- 
+
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
- 
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: mysql
+          MYSQL_DATABASE: retail_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -pmysql"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=20
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
- 
-      - name: Set up Java
-        uses: actions/setup-java@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '22'
- 
-      - name: Grant execute permission
-        working-directory: SeleniumProject
+          java-version: 17
+          cache: gradle
+
+      - name: Make Gradle executable
         run: chmod +x gradlew
- 
-      - name: Run tests
-        working-directory: SeleniumProject
-        run: ./gradlew test --tests "com.ust.sdet.data.OrdersDataIT"
- 
-      - name: Upload Allure results
+
+      - name: Run Tests
+        run: ./gradlew clean W6D3DataBuilderStructureTest OrdersDataIT W6D4ReportingInsightsTest
+        env:
+          ORG_GRADLE_PROJECT_dbUrl: jdbc:mysql://localhost:3306/retail_test
+          ORG_GRADLE_PROJECT_dbUser: root
+          ORG_GRADLE_PROJECT_dbPassword: mysql
+
+      - name: Verify Allure Results
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results
-          path: SeleniumProject/target/allure-results
-          if-no-files-found: warn
- 
-      - name: Generate and publish Allure report
+        run: |
+          echo "Current directory:"
+          pwd
+
+          echo "Allure results:"
+          ls -la build/allure-results || true
+
+          echo "Result file count:"
+          find build/allure-results -name "*-result.json" | wc -l || true
+
+      - name: Generate Allure Report
         if: always()
         uses: simple-elf/allure-report-action@master
         with:
-          allure_results: SeleniumProject/target/allure-results
+          allure_results: build/allure-results
           gh_pages: gh-pages
           allure_report: allure-report
           allure_history: allure-history
           keep_reports: 20
- 
-      - name: Upload Allure report
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: build/allure-results
+
+      - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report
-          if-no-files-found: warn
- 
+
       - name: Deploy to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v3
@@ -66,13 +91,14 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-report
           publish_branch: gh-pages
- 
-      - name: Report link
+
+      - name: Report Link
         if: always()
         run: |
           REPO_NAME="${{ github.event.repository.name }}"
           OWNER="${{ github.repository_owner }}"
           REPORT_URL="https://${OWNER}.github.io/${REPO_NAME}/"
+
           echo "✅ Allure report generated"
           echo "📊 Report: ${REPORT_URL}"
-          echo "📊 Report: [Open Allure report](${REPORT_URL})" >> "$GITHUB_STEP_SUMMARY"
+          echo "📊 Report: ${REPORT_URL}" >> "$GITHUB_STEP_SUMMARY"
