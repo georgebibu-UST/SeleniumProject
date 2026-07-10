@@ -72,8 +72,90 @@ class W6D4ReportingInsightsTest {
         );
     }
 
+    @Test
+    @Story("Attachment Example")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Demonstrates multiple attachments in a passing test")
+    void attachmentExample() {
+
+        Allure.step("Attach sample execution notes");
+
+        attachText(
+                "Execution Notes",
+                """
+                Browser: Chrome
+                Environment: QA
+                Result: Success
+                """
+        );
+
+        assertTrue(true);
+    }
+
+    @Test
+    @Story("Business Validation")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Demonstrates successful business rule validation")
+    void businessValidationExample() {
+
+        Allure.step("Validate order total");
+
+        int quantity = 2;
+        int unitPrice = 100;
+
+        assertEquals(200, quantity * unitPrice);
+    }
+
+    @Test
+    @Story("Step Reporting")
+    @Severity(SeverityLevel.MINOR)
+    @Description("Demonstrates detailed step reporting")
+    void stepReportingExample() {
+
+        Allure.step("Create order");
+        Allure.step("Submit order");
+        Allure.step("Receive confirmation");
+
+        assertTrue(true);
+    }
+
+    @Test
+    @Story("Metadata Demonstration")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Shows how metadata appears in the Allure report")
+    void metadataExample() {
+
+        Allure.step("Capture metadata");
+
+        attachText(
+                "Metadata",
+                """
+                Epic: Framework Hardening
+                Feature: Reporting Insights
+                Owner: SDET Trainee
+                """
+        );
+
+        assertTrue(true);
+    }
+
+    @Test
+    @Story("Reporting Dashboard")
+    @Severity(SeverityLevel.MINOR)
+    @Description("Demonstrates a successful dashboard metric")
+    void dashboardExample() {
+
+        Allure.step("Verify reporting dashboard metric");
+
+        int passedTests = 10;
+        int failedTests = 0;
+
+        assertTrue(passedTests > failedTests);
+    }
+
     @Attachment(value = "{name}", type = "text/plain")
     private String attachText(String name, String content) {
         return content;
     }
+    
 }
