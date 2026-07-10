@@ -37,6 +37,7 @@ dependencies {
     testImplementation("io.cucumber:cucumber-picocontainer")
     testImplementation("org.junit.platform:junit-platform-suite")
     testImplementation("io.qameta.allure:allure-cucumber7-jvm")
+    testImplementation("io.qameta.allure:allure-junit5")
     testImplementation("com.aventstack:extentreports:$extentVersion")
     testImplementation("tech.grasshopper:extentreports-cucumber7-adapter:$extentCucumberAdapterVersion")
     testImplementation("org.slf4j:slf4j-simple:$slf4jVersion")
@@ -136,6 +137,14 @@ val CatalogFlowTest by tasks.registering(Test::class) {
     useProjectTestClasses()
     useJUnitPlatform()
     include("**/CatalogFlowTest.class")
+}
+
+val W6D4ReportingInsightsTest by tasks.registering(Test::class) {
+    description = "Demonstrates Allure reporting insights"
+    group = "verification"
+    useProjectTestClasses()
+    useJUnitPlatform()
+    include("**/W6D4ReportingInsightsTest.class")
 }
 
 tasks.register("w6d2BuildSummary") {
