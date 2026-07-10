@@ -61,3 +61,21 @@ jobs:
         with:
           name: allure-report
           path: allure-report
+      
+      - name: Deploy to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          publish_branch: gh-pages
+      
+      - name: Report link
+        if: always()
+        run: |
+          REPO_NAME="${{ github.event.repository.name }}"
+          OWNER="${{ github.repository_owner }}"
+          REPORT_URL="https://${OWNER}.github.io/${REPO_NAME}/"
+          echo "✅ Allure report generated"
+          echo "📊 Report: ${REPORT_URL}"
+          echo "📊 Report: [Open Allure report](${REPORT_URL})" >> "$GITHUB_STEP_SUMMARY"
