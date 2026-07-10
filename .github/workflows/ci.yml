@@ -51,7 +51,7 @@ jobs:
       - name: Generate Allure Report
         if: always()
         run: |
-          ./allure-2.34.1/bin/allure generate target/allure-results \
+          ./allure-2.34.1/bin/allure generate build/allure-results \
           --clean \
           -o allure-report
 
